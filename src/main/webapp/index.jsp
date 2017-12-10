@@ -1,8 +1,14 @@
 <html>
+    <head>
+        <title>Heart monitor API!</title>
+    </head>
 <body>
-    <h2>Jersey RESTful Web Application!</h2>
-    <p><a href="webapi/myresource">Jersey resource</a>
-    <p>Visit <a href="http://jersey.java.net">Project Jersey website</a>
-    for more information on Jersey!
+    <h2>This domain is only for Heart monitor API, not for UI</h2>
+    <h3>Resources:</h3>
+    <ul>
+        <li><a href="api/myresource">Test Resource</a></li>
+        <li></li>
+        <li></li>
+    </ul>
 </body>
 </html>
