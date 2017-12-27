@@ -78,22 +78,6 @@ public class UserControl {
             .build();
         String json = jsonObj.toString();
         return Response.ok(json, MediaType.APPLICATION_JSON).build();
-
-        /* no need map for now
-        // create map to store values
-        MultivaluedHashMap<String,String> map = new MultivaluedHashMap<String,String>();
-        // map
-        map.add("username", username);
-        map.add("password", password);
-        map.add("name", name);
-        map.add("gender", gender);
-        map.add("dob", String.valueOf(dobepoch));
-        map.add("height", height);
-        map.add("weight", weight);
-        map.add("emergency_phone", emergency_phone);
-        */
-
-        //TODO: return
     }
 
     @POST
@@ -104,17 +88,36 @@ public class UserControl {
         @FormParam("username") String username,
         @FormParam("password") String password
         ) {
-      boolean loginSuccess = false;
+      User loginSuccess = null;
       try {
         MySQLConnector connector = new MySQLConnector();
         loginSuccess = connector.login(username, password);
+        connector.close();
       } catch (Exception e) {
         e.printStackTrace();
       } finally {
-        if (loginSuccess) {
-          return Response.status(200).build();
+        if (loginSuccess != null) {
+          SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+          JsonObject jsonObj = Json.createObjectBuilder()
+              .add("username", loginSuccess.getUsername())
+              .add("password", loginSuccess.getPassword())
+              .add("name", loginSuccess.getName())
+              .add("gender", loginSuccess.getGender())
+              .add("dob", df.format(loginSuccess.getDob()))
+              .add("height", String.valueOf(loginSuccess.getHeight()))
+              .add("weight", String.valueOf(loginSuccess.getWeight()))
+              .add("emergency_phone", loginSuccess.getEmergencyPhone())
+              .build();
+          String json = jsonObj.toString();
+          return Response
+          .ok(json, MediaType.APPLICATION_JSON)
+          .header("Access-Control-Allow-Origin", "*")
+          .build();
         } else {
-          return Response.status(401).build();
+          return Response
+            .status(401)
+            .header("Access-Control-Allow-Origin", "*")
+            .build();
         }
       }
     }

@@ -13,6 +13,7 @@ import javax.json.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ArrayList;
+import java.io.StringWriter;
 
 @Path("admin")
 public class AdminControl {
@@ -42,7 +43,11 @@ public class AdminControl {
         .build());
       }
       JsonArray jsonArr = jsonArrBld.build();
-      return Response.ok(jsonArr, MediaType.APPLICATION_JSON).build();
+      StringWriter stWriter = new StringWriter();
+      JsonWriter jsonWriter = Json.createWriter(stWriter);
+      jsonWriter.writeArray(jsonArr);
+      jsonWriter.close();
+      return Response.ok(stWriter.toString(), MediaType.APPLICATION_JSON).build();
     } catch (Exception e) {
       e.printStackTrace();
       return Response.ok(Json.createObjectBuilder().add("error",e.getMessage()).build(), MediaType.APPLICATION_JSON).build();

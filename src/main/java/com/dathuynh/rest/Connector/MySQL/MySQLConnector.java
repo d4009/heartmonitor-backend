@@ -102,7 +102,7 @@ public class MySQLConnector {
     }
   }
 
-  public boolean login(String username, String password) throws Exception{
+  public User login(String username, String password) throws Exception{
     try {
       String hashedPassword = org.apache.commons.codec.digest.DigestUtils.sha256Hex(password);
       String query = "SELECT * FROM users WHERE username = '" + username + "' AND password = '" + hashedPassword + "';";
@@ -111,8 +111,27 @@ public class MySQLConnector {
       resultSet.last();
       int count = resultSet.getRow();
       resultSet.beforeFirst();
-      System.out.println(count);
-      return count != 0;
+      if (count > 0) {
+        resultSet.next();
+        String name = resultSet.getString("name");
+        boolean gender = resultSet.getBoolean("gender");
+        java.sql.Date sqlDob = resultSet.getDate("dob");
+        Date dob = new Date(sqlDob.getTime());
+        int height = resultSet.getInt("height");
+        int weight = resultSet.getInt("weight");
+        String emergency_phone = resultSet.getString("emergency_phone");
+        return new
+          User.UserBuilder(username, hashedPassword)
+          .name(name)
+          .gender(gender)
+          .dob(dob)
+          .height(height)
+          .weight(weight)
+          .emergency_phone(emergency_phone)
+          .build();
+      } else {
+        return null;
+      }
     } catch (Exception e) {
       throw e;
     } finally {
